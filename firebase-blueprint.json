@@ -1,0 +1,61 @@
+{
+  "entities": {
+    "UserPreference": {
+      "title": "User Preference",
+      "description": "Professional niche and automation settings for a user.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Owner of the preferences." },
+        "domain": { "type": "string", "description": "Professional niche." },
+        "interests": { "type": "array", "items": { "type": "string" }, "description": "Interest keywords." },
+        "automationActive": { "type": "boolean", "description": "Whether automation is enabled." },
+        "startTime": { "type": "string", "description": "Daily start time (HH:MM)." },
+        "duration": { "type": "integer", "description": "Duration in minutes." }
+      },
+      "required": ["userId", "domain", "interests", "automationActive", "startTime", "duration"]
+    },
+    "IntelligenceLog": {
+      "title": "Intelligence Log",
+      "description": "Analyzed LinkedIn post record.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "User who analyzed the post." },
+        "author": { "type": "string", "description": "Post author." },
+        "type": { "type": "string", "description": "Category: Technical, Hiring, Motivational, Toxic." },
+        "content": { "type": "string", "description": "Summary/Snippet of the post." },
+        "relevance": { "type": "integer", "description": "Relevance score 0-100." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp of analysis." }
+      },
+      "required": ["userId", "author", "type", "content", "relevance", "createdAt"]
+    },
+    "JobMatch": {
+      "title": "Job Match",
+      "description": "Personalized job recommendation.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "User this job is for." },
+        "title": { "type": "string" },
+        "company": { "type": "string" },
+        "location": { "type": "string" },
+        "description": { "type": "string" },
+        "url": { "type": "string" },
+        "matchScore": { "type": "integer" }
+      },
+      "required": ["userId", "title", "company", "location", "description", "url"]
+    }
+  },
+  "firestore": {
+    "/preferences/{userId}": {
+      "schema": "UserPreference",
+      "description": "User niche and automation settings."
+    },
+    "/logs/{logId}": {
+      "schema": "IntelligenceLog",
+      "description": "Historical feed analysis records."
+    },
+    "/jobs/{jobId}": {
+      "schema": "JobMatch",
+      "description": "Personalized career opportunities."
+    }
+  }
+}

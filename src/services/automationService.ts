@@ -1,0 +1,71 @@
+import { GoogleGenAI, Type } from "@google/genai";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "../lib/firebase";
+
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+
+export interface PostAnalysis {
+  author: string;
+  type: "Technical" | "Hiring" | "Motivational" | "Toxic";
+  content: string;
+  relevance: number;
+}
+
+export async function analyzeLinkedInPost(postContent: string): Promise<PostAnalysis> {
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: `Analyze this LinkedIn post and extract the author, categorize it, summarize the content, and give a relevance score (0-100) for a Data Science/AI professional. 
+      Toxicity check: If it's crypto spam, engagement bait, or low-value noise, mark as "Toxic".
+      
+      Post: ${postContent}`,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            author: { type: Type.STRING },
+            type: { type: Type.STRING, enum: ["Technical", "Hiring", "Motivational", "Toxic"] },
+            content: { type: Type.STRING, description: "One sentence summary" },
+            relevance: { type: Type.NUMBER }
+          },
+          required: ["author", "type", "content", "relevance"]
+        }
+      }
+    });
+
+    const result = JSON.parse(response.text || "{}");
+    return result as PostAnalysis;
+  } catch (error) {
+    console.error("Analysis failed:", error);
+    return {
+      author: "Unknown Source",
+      type: "Toxic",
+      content: "Failed to analyze post intelligence.",
+      relevance: 0
+    };
+  }
+}
+
+export async function saveLogToFirestore(userId: string, analysis: PostAnalysis) {
+  try {
+    await addDoc(collection(db, "logs"), {
+      ...analysis,
+      userId,
+      createdAt: serverTimestamp()
+    });
+  } catch (error) {
+    console.error("Save log failed:", error);
+  }
+}
+
+// Mock Feed Generator for Automation Simulation
+export const MOCK_FEED = [
+  "Just launched our new open-source LLM framework for distributed training! Check the repo for benchmarks.",
+  "I'm hiring a Senior Data Scientist to lead our NLP team in London. DM for details.",
+  "Your network is your net worth. Wake up at 4 AM and hustle. #GRINDSET",
+  "FREE BITCOIN GIVEAWAY! CLICK THIS SUSPICIOUS LINK NOW 🚀🚀🚀",
+  "Standardizing vector database schemas is the next big hurdle in AI infrastructure. My latest thoughts...",
+  "Looking for an intern who knows PyTorch and can start immediately.",
+  "Why I left my $500k job at Big Tech to find my soul while doing pushups.",
+];
