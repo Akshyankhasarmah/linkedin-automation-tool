@@ -23,7 +23,8 @@ export function Home() {
         } else if (err.code === 'auth/popup-blocked') {
           setError("Protocol error: Browser blocked authentication popup.");
         } else {
-          setError("Critical failure: Cloud authentication unreachable.");
+          console.error(err);
+          setError(err.message || "Unknown Firebase error");
         }
         console.error("LinkedIn login simulation failed:", err);
       }
