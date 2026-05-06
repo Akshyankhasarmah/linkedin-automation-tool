@@ -22,8 +22,6 @@ export function Home() {
           setError("Session termination: Authentication window closed.");
         } else if (err.code === 'auth/popup-blocked') {
           setError("Protocol error: Browser blocked authentication popup.");
-        } else if (err.code === 'auth/unauthorized-domain') {
-          setError(`Domain "${window.location.hostname}" is not authorized. Enable it in the project kernel (Firebase).`);
         } else {
           setError("Critical failure: Cloud authentication unreachable.");
         }
