@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Check, Save } from "lucide-react";
 import { GlassCard } from "./GlassCard";
 import { doc, getDoc, setDoc } from "firebase/firestore";

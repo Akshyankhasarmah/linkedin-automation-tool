@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { ExternalLink, MapPin, Building2, Search, RefreshCw } from "lucide-react";
 import { GlassCard } from "./GlassCard";
 import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
@@ -87,7 +87,8 @@ export function JobRecommendations() {
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
         {filteredJobs.map((job) => (
-          <GlassCard key={job.id} className="group hover:border-blue-500/30">
+          <div key={job.id}>
+            <GlassCard className="group hover:border-blue-500/30">
             <div className="mb-4 flex items-start justify-between">
               <div className="h-12 w-12 rounded-xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20 group-hover:bg-blue-500/20 transition-colors">
                 <Building2 className="h-6 w-6 text-blue-400" />
@@ -124,8 +125,9 @@ export function JobRecommendations() {
               </a>
             </div>
           </GlassCard>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
+  </div>
   );
 }

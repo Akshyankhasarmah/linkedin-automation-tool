@@ -9,6 +9,7 @@ export interface PostAnalysis {
   type: "Technical" | "Hiring" | "Motivational" | "Toxic";
   content: string;
   relevance: number;
+  url: string;
 }
 
 export async function analyzeLinkedInPost(postContent: string): Promise<PostAnalysis> {
@@ -27,14 +28,17 @@ export async function analyzeLinkedInPost(postContent: string): Promise<PostAnal
             author: { type: Type.STRING },
             type: { type: Type.STRING, enum: ["Technical", "Hiring", "Motivational", "Toxic"] },
             content: { type: Type.STRING, description: "One sentence summary" },
-            relevance: { type: Type.NUMBER }
+            relevance: { type: Type.NUMBER },
+            url: { type: Type.STRING, description: "A simulated link to the original post on linkedin.com/feed/update/..." }
           },
-          required: ["author", "type", "content", "relevance"]
+          required: ["author", "type", "content", "relevance", "url"]
         }
       }
     });
 
     const result = JSON.parse(response.text || "{}");
+    // Ensure URL is at least linkedin.com if missing
+    if (!result.url) result.url = "https://www.linkedin.com/feed/";
     return result as PostAnalysis;
   } catch (error) {
     console.error("Analysis failed:", error);
@@ -42,7 +46,8 @@ export async function analyzeLinkedInPost(postContent: string): Promise<PostAnal
       author: "Unknown Source",
       type: "Toxic",
       content: "Failed to analyze post intelligence.",
-      relevance: 0
+      relevance: 0,
+      url: "https://www.linkedin.com/feed/"
     };
   }
 }

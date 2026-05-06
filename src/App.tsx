@@ -1,3 +1,4 @@
+import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { Sidebar } from "./components/Sidebar";
 import { Home } from "./components/Home";
@@ -21,15 +22,15 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen bg-black text-white">
+    <div className="flex min-h-screen bg-[#030303] text-[#e0e0e0]">
       <Sidebar />
-      <main className="flex-1 lg:pl-64">
+      <main className="flex-1 ml-16 md:ml-20 lg:ml-24 relative overflow-x-hidden">
         <AnimatePresence mode="wait">
           <motion.div
             key={window.location.pathname}
-            initial={{ opacity: 0, x: 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -10 }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.3 }}
           >
             {children}

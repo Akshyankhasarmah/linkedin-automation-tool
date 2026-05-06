@@ -3,13 +3,18 @@
 To ensure your application works on every URL and endpoint after deployment, follow these critical steps:
 
 ## 1. Firebase Authentication Domains
-For "Sign in with LinkedIn" to work on your specific Vercel deployment, you **MUST** allowlist it in the Firebase Console:
-1. Go to [Firebase Console](https://console.firebase.google.com/).
-2. Select your project.
-3. Go to **Authentication** > **Settings** > **Authorized domains**.
-4. Click **Add domain** and enter exactly: `lined-in-automation.vercel.app`
-5. Also add: `localhost` (for your local development).
-6. **For other devices in your network**: If you access the app via a local IP (e.g., `192.168.1.15:3000`), you must add that IP to the authorized domains list in Firebase.
+For "Sign in with LinkedIn" to work, Firebase must TRUST the exact hostname of your website.
+
+1.  Go to the [Firebase Console Authorized Domains Settings](https://console.firebase.google.com/project/gen-lang-client-0498947034/authentication/settings).
+2.  Click **Add domain**.
+3.  **CRITICAL**: Enter ONLY the hostname. Do NOT include `https://` or any slashes `/`.
+    -   ✅ Correct: `lined-in-automation.vercel.app`
+    -   ❌ Incorrect: `https://lined-in-automation.vercel.app/`
+4.  If you are using a Vercel preview branch, look at the error message in the app; it will tell you the exact hostname to add (e.g., `lined-in-automation-abc.vercel.app`).
+
+### Why it might still fail after adding it:
+-   **Propagation Delay**: It can take up to **5 minutes** for Firebase to update its global security settings.
+-   **Old Session**: Try opening the site in an **Incognito/Private window** to ensure the browser isn't using a cached security state.
 
 ## 2. Go & SQL Backend
 The project includes a production-ready Go backend and SQL schema:

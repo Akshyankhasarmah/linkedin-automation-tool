@@ -1,9 +1,11 @@
+import React from "react";
 import { motion } from "motion/react";
-import { cn } from "@/src/lib/utils";
+import { cn } from "../lib/utils";
 
 interface GlassCardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   gradient?: boolean;
+  className?: string;
 }
 
 export function GlassCard({ children, className, gradient = false, ...props }: GlassCardProps) {

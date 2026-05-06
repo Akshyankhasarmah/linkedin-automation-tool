@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Filter, Search, Trash2, ShieldAlert, GraduationCap, Users, RefreshCw, X, FileText } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Filter, Search, Trash2, ShieldAlert, GraduationCap, Users, RefreshCw, X, FileText as FileTextIcon, ExternalLink } from "lucide-react";
 import { GlassCard } from "./GlassCard";
 import { collection, query, where, getDocs, addDoc, Timestamp, orderBy } from "firebase/firestore";
 import { db } from "../lib/firebase";
@@ -40,10 +40,10 @@ export function FeedReports() {
     if (!user) return;
     setLoading(true);
     const mockPosts = [
-      { userId: user.uid, author: "Jane Tech", type: "Technical", content: "Deep dive into React 19 concurrent features.", relevance: 98, createdAt: Timestamp.now() },
-      { userId: user.uid, author: "Startup Sam", type: "Motivational", content: "Why networking is the only skill that matters.", relevance: 45, createdAt: Timestamp.now() },
-      { userId: user.uid, author: "HR Global", type: "Hiring", content: "Opening for AI Research Scientist in Singapore.", relevance: 100, createdAt: Timestamp.now() },
-      { userId: user.uid, author: "Bot Account", type: "Toxic", content: "CRYPTO MOON 1000X JOIN TELEGRAM NOW!!!", relevance: 5, createdAt: Timestamp.now() },
+      { userId: user.uid, author: "Jane Tech", type: "Technical", content: "Deep dive into React 19 concurrent features.", relevance: 98, url: "https://www.linkedin.com/feed/", createdAt: Timestamp.now() },
+      { userId: user.uid, author: "Startup Sam", type: "Motivational", content: "Why networking is the only skill that matters.", relevance: 45, url: "https://www.linkedin.com/feed/", createdAt: Timestamp.now() },
+      { userId: user.uid, author: "HR Global", type: "Hiring", content: "Opening for AI Research Scientist in Singapore.", relevance: 100, url: "https://www.linkedin.com/feed/", createdAt: Timestamp.now() },
+      { userId: user.uid, author: "Bot Account", type: "Toxic", content: "CRYPTO MOON 1000X JOIN TELEGRAM NOW!!!", relevance: 5, url: "https://www.linkedin.com/feed/", createdAt: Timestamp.now() },
     ];
 
     try {
@@ -65,7 +65,7 @@ export function FeedReports() {
       case "Technical": return <GraduationCap className="h-4 w-4 text-blue-400" />;
       case "Hiring": return <Users className="h-4 w-4 text-emerald-400" />;
       case "Toxic": return <ShieldAlert className="h-4 w-4 text-red-400" />;
-      default: return <FileText className="h-4 w-4 text-gray-400" />;
+      default: return <FileTextIcon className="h-4 w-4 text-gray-400" />;
     }
   };
 
@@ -201,12 +201,21 @@ export function FeedReports() {
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <button 
-                      onClick={() => setSelectedLog(post)}
-                      className="text-xs font-bold text-blue-400 hover:underline"
-                    >
-                      Inspect Report
-                    </button>
+                    <div className="flex items-center justify-end gap-4">
+                      <button 
+                        onClick={() => window.open(post.url || 'https://linkedin.com', '_blank')}
+                        className="p-2 rounded-lg bg-white/5 border border-white/10 text-gray-400 hover:text-[#0077b5] hover:border-[#0077b5]/30 transition-all"
+                        title="View Original Post"
+                      >
+                        <ExternalLink className="h-3.5 w-3.5" />
+                      </button>
+                      <button 
+                        onClick={() => setSelectedLog(post)}
+                        className="text-xs font-bold text-blue-400 hover:underline"
+                      >
+                        Inspect Report
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -215,28 +224,5 @@ export function FeedReports() {
         </div>
       </GlassCard>
     </div>
-  );
-}
-
-function FileText(props: any) {
-  return (
-    <svg 
-      {...props}
-      xmlns="http://www.w3.org/2000/svg" 
-      width="24" 
-      height="24" 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      strokeLinecap="round" 
-      strokeLinejoin="round"
-    >
-      <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
-      <polyline points="14 2 14 8 20 8" />
-      <line x1="16" y1="13" x2="8" y2="13" />
-      <line x1="16" y1="17" x2="8" y2="17" />
-      <line x1="10" y1="9" x2="8" y2="9" />
-    </svg>
   );
 }

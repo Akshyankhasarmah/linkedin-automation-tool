@@ -1,8 +1,19 @@
-import { useState, useEffect, useRef } from "react";
-import { Play, Square, Loader2, ScrollText, CheckCircle2, AlertTriangle, Linkedin, Terminal, ShieldAlert, Lock, Clock } from "lucide-react";
-import { GlassCard } from "./GlassCard";
+import { useState, useRef } from "react";
+import { 
+  ArrowRight, 
+  Linkedin, 
+  Terminal, 
+  ShieldAlert, 
+  Lock, 
+  Clock, 
+  Activity,
+  Zap,
+  Globe,
+  Cpu,
+  ExternalLink
+} from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
-import { analyzeLinkedInPost, saveLogToFirestore, MOCK_FEED, PostAnalysis } from "../services/automationService";
+import { analyzeLinkedInPost, MOCK_FEED, PostAnalysis } from "../services/automationService";
 import { useAuth } from "../contexts/AuthContext";
 
 export function Automation() {
@@ -13,7 +24,7 @@ export function Automation() {
   const [timeLeft, setTimeLeft] = useState(10);
   const [consoleLogs, setConsoleLogs] = useState<string[]>([]);
   const [discoveredPosts, setDiscoveredPosts] = useState<PostAnalysis[]>([]);
-  const [status, setStatus] = useState("Awaiting Credentials");
+  const [status, setStatus] = useState("DISCONNECTED");
   
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -21,16 +32,32 @@ export function Automation() {
     setConsoleLogs(prev => [`[${new Date().toLocaleTimeString()}] ${msg}`, ...prev].slice(0, 50));
   };
 
+  const auditEvent = async (action: string, payload: any) => {
+    try {
+      await fetch("/api/audit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          event_type: "AUTOMATION_ENGINE",
+          action,
+          user_id: user?.uid,
+          payload
+        })
+      });
+    } catch (err) {
+      console.error("Audit fail:", err);
+    }
+  };
+
   const handleConnect = () => {
     if (!credentials.email || !credentials.password) return;
     setIsConnecting(true);
     setStatus("Establishing Secure Channel...");
     
-    // Simulate connection phase
     setTimeout(() => {
       setIsActive(true);
       setIsConnecting(false);
-      setStatus("Agent Deployed");
+      setStatus("AGENT_DEPLOYED");
       runTenSecondLoop();
     }, 2000);
   };
@@ -39,6 +66,9 @@ export function Automation() {
     if (!user) return;
     
     addLog(`INITIALIZING: LinkedIn Headless Agent (v4.2.0-stable)`);
+    addLog(`SQL: Establishing local audit bridge...`);
+    await auditEvent("SESSION_START", { email: credentials.email });
+
     addLog(`AUTH: Attempting login for ${credentials.email}...`);
     await new Promise(r => setTimeout(r, 1000));
     addLog(`SUCCESS: Session established via session_token_delta`);
@@ -68,15 +98,16 @@ export function Automation() {
       
       addLog(`ANALYSIS: [${analysis.type}] Relevance: ${analysis.relevance}%`);
       setDiscoveredPosts(prev => [analysis, ...prev]);
-      await saveLogToFirestore(user.uid, analysis);
+      await auditEvent("DATA_EXTRACTED", analysis);
     }
   };
 
   const finishSession = () => {
     setIsActive(false);
-    setStatus("Session Complete");
-    addLog(`SYSTEM: Finalizing logs and closing browser instance.`);
+    setStatus("SESSION_COMPLETE");
+    addLog(`SYSTEM: Finalizing SQL logs and closing browser instance.`);
     addLog(`REPORT: Captured ${discoveredPosts.length} professional data points.`);
+    auditEvent("SESSION_END", { count: discoveredPosts.length });
   };
 
   const resetSession = () => {
@@ -85,45 +116,43 @@ export function Automation() {
     setConsoleLogs([]);
     setDiscoveredPosts([]);
     setTimeLeft(10);
-    setStatus("Awaiting Credentials");
+    setStatus("DISCONNECTED");
   };
 
   if (!isActive && !isConnecting && discoveredPosts.length === 0) {
     return (
-      <div className="flex h-[80vh] items-center justify-center p-8">
-        <GlassCard className="w-full max-w-md border-[#0077b5]/20 shadow-2xl">
+      <div className="flex min-h-[80vh] items-center justify-center p-8 grid-technical">
+        <div className="glass-card w-full max-w-md p-10 border-[#0077b5]/30">
           <div className="flex flex-col items-center text-center">
-            <div className="h-16 w-16 rounded-2xl bg-[#0077b5]/10 flex items-center justify-center border border-[#0077b5]/20 mb-6">
-              <Linkedin className="h-8 w-8 text-[#0077b5]" />
+            <div className="h-20 w-20 rounded-3xl bg-[#0077b5] flex items-center justify-center shadow-[0_0_30px_rgba(0,119,181,0.5)] mb-8">
+              <Linkedin className="h-10 w-10 text-white fill-white/10" />
             </div>
-            <h1 className="text-2xl font-bold text-white mb-2">Connect LinkedIn Account</h1>
-            <p className="text-sm text-gray-400 mb-8">Deploying your autonomous agent requires a session bridge. Your credentials are only used to generate an encrypted agent token.</p>
+            <h1 className="text-3xl font-black mb-4 tracking-tighter">AGENT DEPLOYMENT</h1>
+            <p className="text-sm text-gray-500 mb-10 leading-relaxed">Connect your session bridge. Credentials are used to generate a secure agent kernel localized to your environment.</p>
             
-            <div className="w-full space-y-4">
+            <div className="w-full space-y-6">
               <div className="text-left">
-                <label className="text-[10px] text-gray-500 font-black uppercase tracking-widest pl-1 mb-2 block">LinkedIn E-mail</label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-600" />
+                <label className="text-[10px] text-gray-500 font-black uppercase tracking-[0.2em] pl-1 mb-2 block">Session E-mail</label>
+                <div className="relative group">
                   <input 
                     type="email" 
                     placeholder="user@example.com"
                     value={credentials.email}
                     onChange={(e) => setCredentials(prev => ({ ...prev, email: e.target.value }))}
-                    className="w-full rounded-xl bg-white/5 border border-white/10 pl-10 pr-4 py-3 text-sm text-white focus:outline-none focus:ring-1 focus:ring-[#0077b5] transition-all"
+                    className="w-full rounded-2xl bg-white/5 border border-white/10 px-6 py-4 text-sm text-white focus:outline-none focus:border-[#0077b5] transition-all group-hover:border-white/20"
                   />
                 </div>
               </div>
 
               <div className="text-left">
-                <label className="text-[10px] text-gray-500 font-black uppercase tracking-widest pl-1 mb-2 block">Secure Password</label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-600" />
+                <label className="text-[10px] text-gray-500 font-black uppercase tracking-[0.2em] pl-1 mb-2 block">Secure Key</label>
+                <div className="relative group">
                   <input 
                     type="password" 
                     placeholder="••••••••"
                     value={credentials.password}
                     onChange={(e) => setCredentials(prev => ({ ...prev, password: e.target.value }))}
-                    className="w-full rounded-xl bg-white/5 border border-white/10 pl-10 pr-4 py-3 text-sm text-white focus:outline-none focus:ring-1 focus:ring-[#0077b5] transition-all"
+                    className="w-full rounded-2xl bg-white/5 border border-white/10 px-6 py-4 text-sm text-white focus:outline-none focus:border-[#0077b5] transition-all group-hover:border-white/20"
                   />
                 </div>
               </div>
@@ -131,114 +160,155 @@ export function Automation() {
               <button 
                 onClick={handleConnect}
                 disabled={!credentials.email || !credentials.password}
-                className="w-full rounded-xl bg-[#0077b5] py-4 font-bold text-white shadow-[0_0_15px_rgba(0,119,181,0.4)] hover:bg-[#006097] transition-all disabled:opacity-50 disabled:grayscale mt-4"
+                className="btn-professional btn-primary w-full py-5 text-sm uppercase tracking-[0.2em] mt-4 disabled:opacity-30 disabled:grayscale"
               >
-                Establish Connection
+                Establish Link <ArrowRight className="h-4 w-4" />
               </button>
             </div>
           </div>
-        </GlassCard>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="p-8 space-y-8">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div className="p-12 space-y-12 grid-technical min-h-screen">
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-end justify-between border-b border-white/5 pb-12">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-             <div className={`h-2 w-2 rounded-full ${isActive ? "bg-emerald-500 animate-pulse" : "bg-gray-500"}`} />
-             <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest">{status}</p>
+          <div className="flex items-center gap-3 mb-2">
+             <div className={`h-2 w-2 rounded-full ${isActive ? "bg-emerald-500 animate-pulse" : "bg-gray-700"}`} />
+             <p className="text-[10px] font-black text-gray-500 uppercase tracking-[0.3em]">{status}</p>
           </div>
-          <h1 className="text-3xl font-bold text-white tracking-tight flex items-center gap-3">
-             Autonomous Session
-             {isActive && (
-               <span className="flex items-center gap-1 text-sm bg-blue-500/10 text-blue-400 px-3 py-1 rounded-full border border-blue-500/20">
-                 <Clock className="h-3.5 w-3.5" /> {timeLeft}s REMAINING
-               </span>
-             )}
-          </h1>
+          <h1 className="text-5xl font-black tracking-tighter">MISSION_KERNEL</h1>
         </div>
         
-        {(!isActive && !isConnecting) && (
-          <button 
-            onClick={resetSession}
-            className="flex items-center gap-2 rounded-xl bg-white/5 px-6 py-3 text-sm font-bold text-white hover:bg-white/10 border border-white/10"
-          >
-            New Session
-          </button>
-        )}
+        <div className="flex items-center gap-4">
+           {isActive && (
+             <div className="px-6 py-2 rounded-2xl bg-[#0077b5]/10 border border-[#0077b5]/20 flex items-center gap-3 font-mono text-xs text-[#0077b5]">
+                <Clock className="h-4 w-4 animate-spin-slow" /> {timeLeft}s_REMAINING
+             </div>
+           )}
+           {(!isActive && !isConnecting) && (
+              <button 
+                onClick={resetSession}
+                className="btn-professional btn-outline text-xs uppercase tracking-widest px-6"
+              >
+                Re-Deploy 
+              </button>
+           )}
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
         {/* Agent Terminal */}
-        <GlassCard className="lg:col-span-3 bg-black/40 border-white/5 font-mono overflow-hidden flex flex-col p-0">
-          <div className="bg-white/5 border-b border-white/10 px-6 py-3 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Terminal className="h-4 w-4 text-gray-500" />
-              <span className="text-[11px] font-bold text-gray-500">AGENT_PROCESS_OUTPUT</span>
+        <div className="lg:col-span-3 flex flex-col glass-card border-white/5 bg-black/40 overflow-hidden min-h-[500px]">
+          <div className="bg-white/5 border-b border-white/10 px-8 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Terminal className="h-4 w-4 text-[#0077b5]" />
+              <span className="text-[10px] font-black tracking-[0.2em] text-gray-500 uppercase">KERNEL_AUDIT_LOG</span>
             </div>
-            <div className="flex gap-1">
-              <div className="h-2 w-2 rounded-full bg-red-500/50" />
-              <div className="h-2 w-2 rounded-full bg-yellow-500/50" />
-              <div className="h-2 w-2 rounded-full bg-green-500/50" />
+            <div className="flex gap-2">
+               <div className="h-2 w-2 rounded-full bg-red-500/30" />
+               <div className="h-2 w-2 rounded-full bg-yellow-500/30" />
+               <div className="h-2 w-2 rounded-full bg-[#0077b5]/30" />
             </div>
           </div>
-          <div className="p-6 flex-1 overflow-y-auto max-h-[500px] space-y-2 bg-[#050505]">
+          <div className="flex-1 p-8 font-mono text-[11px] leading-relaxed overflow-y-auto space-y-3 bg-[#050505]">
             <AnimatePresence>
               {(isConnecting || isActive || consoleLogs.length > 0) ? consoleLogs.map((log, i) => (
                 <motion.div 
-                  initial={{ opacity: 0, x: -5 }} 
+                  initial={{ opacity: 0, x: -10 }} 
                   animate={{ opacity: 1, x: 0 }} 
                   key={i} 
-                  className={`text-xs ${log.includes('SUCCESS') ? 'text-emerald-400' : log.includes('AUTH') ? 'text-[#0077b5]' : 'text-gray-400'}`}
+                  className={`flex gap-4 ${log.includes('SUCCESS') ? 'text-emerald-400' : log.includes('AUTH') ? 'text-[#0077b5]' : 'text-gray-500'}`}
                 >
-                  <span className="mr-2 text-gray-700">|</span> {log}
+                  <span className="opacity-20 text-white shrink-0">[{50-i}]</span>
+                  <span>{log}</span>
                 </motion.div>
               )) : (
-                <div className="flex flex-col items-center justify-center h-48 opacity-20">
-                   <Loader2 className="h-8 w-8 animate-spin mb-4" />
-                   <p className="text-xs uppercase tracking-widest font-black">Waiting for connection...</p>
+                <div className="h-full flex flex-col items-center justify-center opacity-10">
+                   <Activity className="h-12 w-12 animate-pulse mb-4" />
+                   <p className="text-[10px] font-black uppercase tracking-[0.4em]">STANDBY_MODE</p>
                 </div>
               )}
             </AnimatePresence>
           </div>
-        </GlassCard>
+        </div>
 
         {/* Intelligence Stream */}
-        <div className="lg:col-span-2 space-y-6">
-          <h2 className="text-sm font-black text-gray-500 uppercase tracking-widest">Discovered Intelligence</h2>
-          <div className="space-y-4 max-h-[450px] overflow-y-auto pr-2">
+        <div className="lg:col-span-2 space-y-8">
+          <div className="flex items-center gap-4">
+             <div className="h-[1px] flex-1 bg-white/5" />
+             <h2 className="text-[11px] font-black text-gray-700 uppercase tracking-[0.4em] whitespace-nowrap">Extracted Data</h2>
+             <div className="h-[1px] flex-1 bg-white/5" />
+          </div>
+          
+          <div className="space-y-6 max-h-[600px] overflow-y-auto pr-4 no-scrollbar">
             <AnimatePresence initial={false}>
               {discoveredPosts.map((analysis, i) => (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="p-5 rounded-2xl bg-white/[0.03] border border-white/10 flex gap-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  onClick={() => window.open(analysis.url, '_blank')}
+                  className="p-6 md:p-8 rounded-[2rem] bg-white/[0.01] border border-white/5 space-y-4 hover:border-[#0077b5]/50 hover:bg-white/[0.03] transition-all font-display group cursor-pointer active:scale-[0.98]"
                 >
-                  <div className={`shrink-0 h-10 w-10 rounded-xl flex items-center justify-center border ${
-                    analysis.type === 'Toxic' ? 'bg-red-500/10 border-red-500/20' : 'bg-[#0077b5]/10 border-[#0077b5]/20'
-                  }`}>
-                    {analysis.type === 'Toxic' ? <ShieldAlert className="h-5 w-5 text-red-500" /> : <Linkedin className="h-5 w-5 text-[#0077b5]" />}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className={`p-2 rounded-xl ${
+                        analysis.type === 'Toxic' ? 'bg-red-500/10 text-red-500' : 'bg-[#0077b5]/10 text-[#0077b5]'
+                      }`}>
+                        {analysis.type === 'Toxic' ? <ShieldAlert className="h-5 w-5" /> : <Linkedin className="h-5 w-5" />}
+                      </div>
+                      <span className="font-bold text-white group-hover:text-[#0077b5] transition-colors">{analysis.author}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                       <span className="text-[10px] font-black text-gray-700 uppercase tracking-widest">{analysis.relevance}% Match</span>
+                       <ExternalLink className="h-3 w-3 text-gray-700 group-hover:text-[#0077b5]" />
+                    </div>
                   </div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-bold text-white mb-1">{analysis.author}</p>
-                    <p className="text-xs text-gray-500 bg-white/5 rounded px-2 py-0.5 inline-block mb-2 font-mono uppercase">
-                      CAT: {analysis.type}
-                    </p>
-                    <p className="text-xs text-gray-400 italic">"{analysis.content}"</p>
+                  
+                  <p className="text-sm text-gray-500 italic leading-relaxed">"{analysis.content}"</p>
+                  
+                  <div className="flex flex-wrap gap-2">
+                     <span className="px-3 py-1 rounded bg-white/5 border border-white/5 text-[9px] font-black text-gray-600 uppercase tracking-widest">
+                       DOM_ID_{i}
+                     </span>
+                     <span className="px-3 py-1 rounded bg-white/5 border border-white/5 text-[9px] font-black text-gray-600 uppercase tracking-widest">
+                       {analysis.type}
+                     </span>
                   </div>
                 </motion.div>
               ))}
             </AnimatePresence>
             
             {discoveredPosts.length === 0 && !isActive && !isConnecting && (
-              <div className="p-8 rounded-2xl border border-dashed border-white/10 flex flex-col items-center justify-center text-center opacity-30">
-                 <AlertTriangle className="h-8 w-8 mb-4 text-gray-600" />
-                 <p className="text-xs font-bold text-gray-500">INTELLIGENCE STREAM EMPTY</p>
+              <div className="h-64 rounded-[2rem] border border-dashed border-white/5 flex flex-col items-center justify-center text-center p-12">
+                 <div className="flex gap-1 mb-6">
+                    <div className="h-1.5 w-1.5 rounded-full bg-white/5" />
+                    <div className="h-1.5 w-1.5 rounded-full bg-white/5" />
+                    <div className="h-1.5 w-1.5 rounded-full bg-white/5" />
+                 </div>
+                 <p className="text-[10px] font-black text-gray-700 uppercase tracking-[0.2em] leading-relaxed">Awaiting neural feedback from deployed agent kernel.</p>
               </div>
             )}
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+             <div className="glass-card p-6 border-emerald-500/20 bg-emerald-500/5">
+                <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-1">Signal Strength</p>
+                <div className="flex items-center gap-2">
+                   <Globe className="h-4 w-4 text-emerald-500" />
+                   <span className="text-xl font-bold font-display tracking-tight text-white">98%</span>
+                </div>
+             </div>
+             <div className="glass-card p-6 border-purple-500/20 bg-purple-500/5">
+                <p className="text-[9px] font-black text-gray-500 uppercase tracking-widest mb-1">Processing</p>
+                <div className="flex items-center gap-2">
+                   <Cpu className="h-4 w-4 text-purple-500" />
+                   <span className="text-xl font-bold font-display tracking-tight text-white">420ms</span>
+                </div>
+             </div>
           </div>
         </div>
       </div>
