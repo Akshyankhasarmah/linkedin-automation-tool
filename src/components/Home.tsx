@@ -15,7 +15,7 @@ export function Home() {
       navigate('/dashboard');
     } else {
       try {
-        await signIn(); 
+        await signIn();
         navigate('/dashboard');
       } catch (err: any) {
         if (err.code === 'auth/popup-closed-by-user') {
@@ -49,7 +49,7 @@ export function Home() {
             <a href="#network" className="hover:text-white transition-colors">Edge Network</a>
             <a href="#security" className="hover:text-white transition-colors">Security</a>
           </div>
-          <button 
+          <button
             onClick={handleLinkedInLogin}
             className="text-[11px] font-black uppercase tracking-[0.2em] px-6 py-2 border border-white/10 rounded-full hover:bg-white hover:text-black transition-all"
           >
@@ -70,12 +70,12 @@ export function Home() {
               <span className="flex h-2 w-2 rounded-full bg-[#0077b5] animate-pulse" />
               <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Autonomous Intelligence Relay Active</span>
             </div>
-            
+
             <h1 className="text-6xl md:text-8xl font-black tracking-tight leading-[0.9] mb-8">
               LINKEDIN <br />
               <span className="text-[#0077b5]">AUTOMATION TOOL</span>
             </h1>
-            
+
             <p className="max-w-xl mx-auto text-lg text-gray-500 font-medium leading-relaxed mb-12">
               Transform your passive scroll into an active pipeline. Our edge-computed agent monitors feed signals to extract high-value career data, job leads, and technical intelligence in real-time.
             </p>
@@ -91,7 +91,7 @@ export function Home() {
                 </button>
                 <AnimatePresence>
                   {error && (
-                    <motion.div 
+                    <motion.div
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0 }}
@@ -120,14 +120,14 @@ export function Home() {
             <h3 className="text-3xl font-black mb-4">Neural Scraping Engine</h3>
             <p className="text-gray-400 max-w-md">Our headless engine doesn't just scroll—it interprets. Using localized LLMs, it parses content, intent, and career relevance without human supervision.</p>
             <div className="mt-12 grid grid-cols-2 gap-8 border-t border-white/5 pt-8">
-               <div>
-                  <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Extraction Latency</h4>
-                  <p className="font-display font-bold text-xl">420ms / post</p>
-               </div>
-               <div>
-                  <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Analysis Depth</h4>
-                  <p className="font-display font-bold text-xl">84% Precision</p>
-               </div>
+              <div>
+                <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Extraction Latency</h4>
+                <p className="font-display font-bold text-xl">420ms / post</p>
+              </div>
+              <div>
+                <h4 className="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2">Analysis Depth</h4>
+                <p className="font-display font-bold text-xl">84% Precision</p>
+              </div>
             </div>
           </div>
 
@@ -138,7 +138,7 @@ export function Home() {
             <div className="mt-8 space-y-3">
               {['Multi-Endpoint Support', 'SQL Persistence', 'Auth Relay Bridge'].map((item) => (
                 <div key={item} className="flex items-center gap-2 text-[10px] font-black text-white uppercase tracking-widest bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
-                   <Target className="h-3 w-3 text-[#0077b5]" /> {item}
+                  <Target className="h-3 w-3 text-[#0077b5]" /> {item}
                 </div>
               ))}
             </div>
@@ -152,19 +152,19 @@ export function Home() {
 
           <div className="md:col-span-2 glass-card p-12 bg-gradient-to-br from-white/[0.02] to-transparent">
             <div className="flex flex-col md:flex-row gap-12">
-               <div className="flex-1">
-                 <Database className="h-10 w-10 text-purple-500 mb-8" />
-                 <h3 className="text-2xl font-black mb-4">Relational Integrity</h3>
-                 <p className="text-sm text-gray-500">Full Go/SQL backend blueprints ensure your data is ready for enterprise migration when you scale up from the prototype layer.</p>
-               </div>
-               <div className="flex-1 rounded-2xl bg-black/40 border border-white/5 p-6 font-mono text-[10px] text-gray-600">
-                  <p className="text-blue-500 mb-2">// LI-INTEL_SQL_SCHEMA</p>
-                  <p>CREATE TABLE logs (</p>
-                  <p className="pl-4">id SERIAL PRIMARY KEY,</p>
-                  <p className="pl-4">relevance INTEGER,</p>
-                  <p className="pl-4">type TEXT CHECK (type IN('Technical', 'Hiring', 'Toxic'))</p>
-                  <p>);</p>
-               </div>
+              <div className="flex-1">
+                <Database className="h-10 w-10 text-purple-500 mb-8" />
+                <h3 className="text-2xl font-black mb-4">Relational Integrity</h3>
+                <p className="text-sm text-gray-500">Full Go/SQL backend blueprints ensure your data is ready for enterprise migration when you scale up from the prototype layer.</p>
+              </div>
+              <div className="flex-1 rounded-2xl bg-black/40 border border-white/5 p-6 font-mono text-[10px] text-gray-600">
+                <p className="text-blue-500 mb-2">// LI-INTEL_SQL_SCHEMA</p>
+                <p>CREATE TABLE logs (</p>
+                <p className="pl-4">id SERIAL PRIMARY KEY,</p>
+                <p className="pl-4">relevance INTEGER,</p>
+                <p className="pl-4">type TEXT CHECK (type IN('Technical', 'Hiring', 'Toxic'))</p>
+                <p>);</p>
+              </div>
             </div>
           </div>
         </div>
@@ -174,9 +174,9 @@ export function Home() {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8 opacity-50">
           <p className="text-[10px] font-black uppercase tracking-[0.4em]">© 2026 LI-INTEL Intelligence Corp.</p>
           <div className="flex gap-8 text-[10px] font-black uppercase tracking-widest">
-             <span>Protocol_v4</span>
-             <span>Encrypted Session</span>
-             <span>Audit_Log_Active</span>
+            <span>Protocol_v4</span>
+            <span>Encrypted Session</span>
+            <span>Audit_Log_Active</span>
           </div>
         </div>
       </footer>
