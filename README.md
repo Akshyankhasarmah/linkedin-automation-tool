@@ -1,9 +1,12 @@
 LinkedIn Automation Tool
 
 Overview
+
 LinkedIn Automation Tool is an AI-powered full-stack web application designed to automate LinkedIn feed monitoring, job intelligence extraction, and professional content analysis. The system uses automation workflows, AI-based NLP analysis, and dashboard analytics to help users identify relevant career opportunities and filter low-quality content.
 The project combines frontend, backend, database, automation, and AI technologies into a single intelligent career assistance platform.
+
 Features
+
 -	Automated LinkedIn feed monitoring
 -	AI-based content classification
 -	Toxicity and spam detection
@@ -14,8 +17,12 @@ Features
 -	User authentication and session management
 -	Automation scheduling
 -	Cloud synchronization
+
+  
 Technologies Used
+
 Technology | Purpose
+
 React.js -Frontend UI 
 Vite -Frontend build tool 
 Tailwind CSS -Styling and responsive design 
@@ -29,7 +36,9 @@ Go Language -Automation microservice
 Node-cron -Task scheduling 
 REST APIs -Frontend-backend communication 
 Vercel -Deployment 
+
 Project Architecture
+
 User
    ↓
 React Frontend
@@ -47,6 +56,8 @@ Gemini AI Analysis
 SQLite Database
    ↓
 Dashboard Visualization
+
+
 Modules
 1.	User Authentication
 ●	Secure login using Firebase Authentication
@@ -71,8 +82,11 @@ Modules
 ●	Displays reports, logs, and AI insights
  
 Firebase Firestore API	Cloud synchronization
+
 REST APIs	Frontend-backend communication
+
 Node-cron	Automation scheduling SQLite API	Database operations
+
 Conclusion
 The LinkedIn Automation Tool is an AI-powered automation platform that combines LinkedIn feed extraction, intelligent content analysis, job matching, and dashboard analytics into a single system. The project demonstrates the integration of full-stack development, automation workflows, cloud services, and AI technologies for professional career assistance
 
