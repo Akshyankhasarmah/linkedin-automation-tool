@@ -1,3 +1,81 @@
+LinkedIn Automation Tool
+
+Overview
+LinkedIn Automation Tool is an AI-powered full-stack web application designed to automate LinkedIn feed monitoring, job intelligence extraction, and professional content analysis. The system uses automation workflows, AI-based NLP analysis, and dashboard analytics to help users identify relevant career opportunities and filter low-quality content.
+The project combines frontend, backend, database, automation, and AI technologies into a single intelligent career assistance platform.
+Features
+-	Automated LinkedIn feed monitoring
+-	AI-based content classification
+-	Toxicity and spam detection
+-	Intelligent job matching
+-	Human-like automated scrolling
+-	Real-time analytics dashboard
+-	Report and log generation
+-	User authentication and session management
+-	Automation scheduling
+-	Cloud synchronization
+Technologies Used
+Technology | Purpose
+React.js -Frontend UI 
+Vite -Frontend build tool 
+Tailwind CSS -Styling and responsive design 
+TypeScript -Safer frontend development 
+Node.js -Backend runtime 
+Express.js -REST API development 
+SQLite -Database storage 
+Firebase -Authentication and cloud sync 
+Gemini AI Pro -AI-based content analysis 
+Go Language -Automation microservice 
+Node-cron -Task scheduling 
+REST APIs -Frontend-backend communication 
+Vercel -Deployment 
+Project Architecture
+User
+   ↓
+React Frontend
+   ↓
+Node.js + Express Backend
+   ↓
+Firebase Authentication
+   ↓
+Automation Engine
+   ↓
+Go Microservice
+   ↓
+Gemini AI Analysis
+   ↓
+SQLite Database
+   ↓
+Dashboard Visualization
+Modules
+1.	User Authentication
+●	Secure login using Firebase Authentication
+●	Session management and access control
+2.	Automation Engine
+●	Automated LinkedIn monitoring
+●	Human-like scrolling and extraction
+●	Scheduled automation using Node-cron
+3.	Feed Extraction
+●	Extracts LinkedIn posts and job-related data
+●	Processes professional content automatically
+4.	AI Content Analysis
+●	Gemini AI performs NLP-based analysis
+●	Categorizes content and generates insights
+5.	Toxicity Detection
+●	Detects spam and low-quality content
+●	Improves professional feed quality
+6.	Job Matching
+●	Matches jobs based on user interests
+●	AI-generated relevance scoring
+7.	Dashboard Analytics
+●	Displays reports, logs, and AI insights
+ 
+Firebase Firestore API	Cloud synchronization
+REST APIs	Frontend-backend communication
+Node-cron	Automation scheduling SQLite API	Database operations
+Conclusion
+The LinkedIn Automation Tool is an AI-powered automation platform that combines LinkedIn feed extraction, intelligent content analysis, job matching, and dashboard analytics into a single system. The project demonstrates the integration of full-stack development, automation workflows, cloud services, and AI technologies for professional career assistance
+
 
 
 ## Run Locally
