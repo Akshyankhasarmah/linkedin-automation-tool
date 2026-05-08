@@ -92,6 +92,19 @@ The LinkedIn Automation Tool is an AI-powered automation platform that combines 
 
 <img width="1144" height="808" alt="image" src="https://github.com/user-attachments/assets/97549fac-1ae3-4600-a1d1-96cf3a40eb56" />
 
+<img width="744" height="885" alt="image" src="https://github.com/user-attachments/assets/392ebab2-bed2-4b6f-8aaa-3f34a8d316d4" />
+
+
+<img width="1144" height="333" alt="image" src="https://github.com/user-attachments/assets/e1b298e7-7776-4bbc-b62f-34dc2e02398a" />
+
+<img width="1144" height="675" alt="image" src="https://github.com/user-attachments/assets/ffe2b255-6399-4ced-ba2a-53bf999881ed" />
+
+
+<img width="1144" height="655" alt="image" src="https://github.com/user-attachments/assets/074c3947-acc0-4058-bc21-84cba283a9bf" />
+
+
+<img width="1144" height="438" alt="image" src="https://github.com/user-attachments/assets/08d1f9d4-c6d1-49f9-baec-2b86ff89a87c" />
+
 
 ## Run Locally
 
