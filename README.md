@@ -90,6 +90,7 @@ Node-cron	Automation scheduling SQLite API	Database operations
 Conclusion
 The LinkedIn Automation Tool is an AI-powered automation platform that combines LinkedIn feed extraction, intelligent content analysis, job matching, and dashboard analytics into a single system. The project demonstrates the integration of full-stack development, automation workflows, cloud services, and AI technologies for professional career assistance
 
+<img width="1144" height="808" alt="image" src="https://github.com/user-attachments/assets/97549fac-1ae3-4600-a1d1-96cf3a40eb56" />
 
 
 ## Run Locally
